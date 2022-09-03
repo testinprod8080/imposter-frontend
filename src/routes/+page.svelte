@@ -1,57 +1,63 @@
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
+	let searchInput: string;
+	let searchResult = {
+		status: '',
+		searchedContract: ''
+	};
+	let promise;
+
+	function search() {
+		searchResult.status = 'searching';
+		searchResult.searchedContract = searchInput;
+		promise = getContract(searchInput);
+	}
+
+	async function getContract(contractAddress: string) {
+		// TODO this calls to blockchain
+		if (contractAddress)
+			setTimeout(() => searchResult.status = 'success', 3000);
+		else
+			setTimeout(() => searchResult.status = 'error', 3000);
+	}
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Join Game</title>
+	<meta name="description" content="Join game page" />
 </svelte:head>
 
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
-			</picture>
-		</span>
+<section  class="flex flex-1 flex-col justify-center items-center space-y-5">
+	<h1>Find Game</h1>
+	<div class="flex space-x-3">
+		<input 
+			bind:value={searchInput}
+			placeholder="Enter game contract address" 
+			class="block px-2 py-1 w-96"
+		/>
+		<button 
+			disabled={searchResult.status === 'searching'}
+			on:click={search}
+			class="p-2 bg-slate-700 text-slate-200 rounded-md"
+		>
+			Search
+		</button>
+	</div>
 
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+	{#if searchResult.status === 'searching'}
+		<h1 class="w-full">Searching...</h1>
+	{:else if searchResult.status === 'success'}
+		<div class="flex flex-col justify-center items-center">
+			<h1 class="w-full">{searchResult.searchedContract} found</h1>
+			<a href={"/lobby/" + searchResult.searchedContract}>
+				<button class="p-2 bg-slate-700 text-slate-200 rounded-md">
+					Join Game
+				</button>
+			</a>
+		</div>
+	{:else if searchResult.status === 'error'}
+		<h1 class="w-full">{searchResult.searchedContract} is not a valid game</h1>
+	{/if}
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
 </style>

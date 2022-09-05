@@ -6,14 +6,19 @@
 
   export let imposter: boolean;
   export let task: Task | null;
+  export let setVoting: Function;
 
   let _showTaskModal = false; 
-  let _isFakeStartTask = true;
+  let _isFakeStartTask = false;
   let _showKillModal = false;
 
-  function handleOpenStartTaskModal(isFakeStart = false) {
-    _isFakeStartTask = isFakeStart;
+  function handleOpenStartTaskModal() {
     _showTaskModal = true;
+  }
+
+  function handleOpenFakeTaskModal(isFakeStartTask: boolean) {
+    _isFakeStartTask = _isFakeStartTask;
+    handleOpenStartTaskModal();
   }
 
   function handleOpenKillPlayerModal() {
@@ -64,13 +69,13 @@
 
     <button 
       class="p-2 bg-slate-700 text-slate-200 rounded-md"
-      on:click={handleOpenStartTaskModal}
+      on:click={() => handleOpenFakeTaskModal(true)}
     >
       Fake Starting a Task
     </button>
     <button 
       class="p-2 bg-slate-700 text-slate-200 rounded-md"
-      on:click={handleOpenStartTaskModal}
+      on:click={() => handleOpenFakeTaskModal(false)}
     >
       Fake Finishing a Task
     </button>
@@ -119,7 +124,10 @@
   {/if}
 
   {#if imposter || !task}
-    <button class="p-2 bg-slate-700 text-slate-200 rounded-md">
+    <button 
+      class="p-2 bg-slate-700 text-slate-200 rounded-md"
+      on:click={setVoting()}
+    >
       Call Vote
     </button>
   {/if}

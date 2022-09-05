@@ -2,6 +2,7 @@
 Frontend for Imposter blockchain game
 # Versions
 ## v0.1
+- [ ] scaffolding
 - [ ] join game page
   - [ ] check supplied contract address configs
   - [ ] display errors

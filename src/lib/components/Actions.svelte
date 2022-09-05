@@ -1,35 +1,38 @@
 <script lang="ts">
   import type { Task } from "$lib/classes/Task";
   import { onMount } from "svelte";
+  import KillModal from "./KillModal.svelte";
   import TaskModal from "./TaskModal.svelte";
 
   export let imposter: boolean;
   export let task: Task | null;
 
-  let showModal = false;
+  let _showTaskModal = false; 
+  let _isFakeStartTask = true;
+  let _showKillModal = false;
 
-  let imposterActions = [
-    'Kill Player',
-    'Fake Start Task',
-    'Fake Finish Task'
-  ];	  
+  function handleOpenStartTaskModal(isFakeStart = false) {
+    _isFakeStartTask = isFakeStart;
+    _showTaskModal = true;
+  }
+
+  function handleOpenKillPlayerModal() {
+    _showKillModal = true;
+  }
+
+  function closeModals() {
+    _showTaskModal = false;
+    _showKillModal = false;
+  }
 
   function handleStartTask(selectedTask: Task) {
     selectedTask.timeStarted = now;
     task = selectedTask;
-    showModal = false;
+    _showTaskModal = false;
   }
 
   function handleFinishTask() {
     task = null;
-  }
-
-  function handleOpenStartTaskModal() {
-    showModal = true;
-  }
-
-  function closeModal() {
-    showModal = false;
   }
   
   // task countdown
@@ -58,14 +61,31 @@
 
 <div class="flex flex-col gap-4">
   {#if imposter}
-    {#each imposterActions as action}
-      <button class="p-2 bg-slate-700 text-slate-200 rounded-md">
-        {action}
-      </button>
-    {/each}
+
+    <button 
+      class="p-2 bg-slate-700 text-slate-200 rounded-md"
+      on:click={handleOpenStartTaskModal}
+    >
+      Fake Starting a Task
+    </button>
+    <button 
+      class="p-2 bg-slate-700 text-slate-200 rounded-md"
+      on:click={handleOpenStartTaskModal}
+    >
+      Fake Finishing a Task
+    </button>
+    <button 
+      class="p-2 bg-slate-700 text-slate-200 rounded-md"
+      on:click={handleOpenKillPlayerModal}
+    >
+      Kill Player
+    </button>
+
   {:else}
+
     {#if task?.id}
       {#if timeLeft <= 0}
+
         <div class="flex flex-col">
           <span>Task {task.id} completed</span>
           <span>Click Finish Task to leave task area</span>
@@ -76,19 +96,25 @@
         >
           Finish Task
         </button>
+
       {:else}
+
         <div class="flex flex-col">
           <span>Working on Task {task.id}</span>
           <span>{(timeLeft / 1000).toFixed(0)} seconds remaining</span>
         </div>
+
       {/if}
+
     {:else}
+
       <button 
         class="p-2 bg-slate-700 text-slate-200 rounded-md"
         on:click={handleOpenStartTaskModal}
       >
         Start Task
       </button>
+
     {/if}
   {/if}
 
@@ -99,10 +125,15 @@
   {/if}
 </div>
 
-{#if showModal}
+{#if _showTaskModal}
   <TaskModal 
-    close={closeModal} 
+    close={closeModals} 
     select={handleStartTask} 
     imposter={imposter}
+    isFakeStart={_isFakeStartTask}
+  />
+{:else if _showKillModal}
+  <KillModal
+    close={closeModals} 
   />
 {/if}

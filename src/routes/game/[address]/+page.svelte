@@ -7,7 +7,7 @@
   export let data: Object;
 
   let myInfo = {
-    imposter: false,
+    imposter: true,
     alive: true,
     currentTask: null
   }

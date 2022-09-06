@@ -1,4 +1,19 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+  import { signerAddress, defaultEvmStores } from 'svelte-ethers-store';
+	import GameManager from '../files/GameManager.json';
+
+  const CONTRACT_ADDRESS = '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512';
+
+	onMount(
+    async () => {
+      // add a test to return in SSR context
+  		// defaultEvmStores.attachContract('imposter', CONTRACT_ADDRESS, GameManager.abi)
+
+      await defaultEvmStores.setProvider();
+    }
+  )
+
 	let searchInput: string;
 	let searchResult = {
 		status: '',
@@ -19,6 +34,8 @@
 		else
 			setTimeout(() => searchResult.status = 'error', 3000);
 	}
+
+  // $: account = $connected && $signer ? $signer.getAddress() : ''
 </script>
 
 <svelte:head>
@@ -26,8 +43,9 @@
 	<meta name="description" content="Join game page" />
 </svelte:head>
 
-<section  class="flex flex-1 flex-col justify-center items-center space-y-5">
+<section class="flex flex-1 flex-col justify-center items-center space-y-5">
 	<h1>Find Game</h1>
+	<span>{$signerAddress}</span>
 	<div class="flex space-x-3">
 		<input 
 			bind:value={searchInput}

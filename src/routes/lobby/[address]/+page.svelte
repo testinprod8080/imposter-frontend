@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { signerAddress } from 'svelte-ethers-store';
+
   /** @type {import('./$types').PageData} */
   export let data: Object;
 
@@ -18,6 +20,7 @@
 
 <section class="flex flex-1 flex-col justify-center items-center space-y-5">
   <h1>Welcome to the Lobby for {data.contractAddress}</h1>
+  <span>{$signerAddress}</span>
   <a href="/">
     <button class="p-2 bg-slate-700 text-slate-200 rounded-md">
       Leave Game

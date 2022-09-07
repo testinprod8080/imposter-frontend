@@ -3,10 +3,10 @@ Frontend for Imposter blockchain game
 # Versions
 ## v0.1
 - [x] scaffolding
-- [ ] join game page
-  - [ ] check supplied contract address configs
-  - [ ] display errors
-  - [ ] join by specifying contract address
+- [x] join game page
+  - [x] check supplied contract address configs
+  - [x] display errors
+  - [x] join by selecting game from list
 - [ ] game lobby
   - [ ] leave game
   - [ ] player list - updates

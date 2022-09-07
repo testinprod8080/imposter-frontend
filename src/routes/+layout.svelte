@@ -1,10 +1,15 @@
 <script lang="ts">
+	import ConnectWallet from '$lib/components/ConnectWallet.svelte';
+
 	import '../app.css';
 </script>
 
-<!-- TODO add wallet connection here -->
+<div class="w-full flex flex-row p-4">
+	<div class="grow" />
+	<ConnectWallet />
+</div>
 
-<main>
+<main class="content-center align-middle items-center h-full w-full">
 	<slot />
 </main>
 
@@ -18,8 +23,7 @@
 		display: flex;
 		flex-direction: column;
 		padding: 1rem;
-		width: 100%;
-		max-width: 1024px;
+		/* max-width: 1024px; */
 		margin: 0 auto;
 		box-sizing: border-box;
 	}

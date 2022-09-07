@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { connected, contracts, defaultEvmStores } from "svelte-ethers-store";
+	import { goto } from "$app/navigation";
+	import { connected, contracts, defaultEvmStores, signerAddress } from "svelte-ethers-store";
 	import GameManager from '../files/GameManager.json';
 
 	let games = [
 		{
-			name: "joes-game",
 			address: '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
 			joined: 2,
 			max: 10
@@ -19,6 +19,20 @@
 		return {
 			count: count
 		};
+	}
+
+	async function join(contractAddress: string) {
+		try {
+			let playerInfo = await $contracts[contractAddress].players($signerAddress);
+			if (!playerInfo.joined) {
+				const transaction = await $contracts[contractAddress].join({gasLimit: 400000});
+				await transaction.wait();
+			}
+			goto('/lobby/' + contractAddress);
+		} catch (error) {
+      alert('Error while joining: ' + error);
+      console.log(error);
+		}
 	}
 </script>
 
@@ -47,11 +61,12 @@
 							<th class="p-4 bg-slate-600">{game.address}</th>
 							<th class="p-4 bg-slate-600">{result.count} / {game.max}</th>
 							<th class="p-4 bg-slate-600">
-								<a href={'/lobby/' + game.address}>
-									<button class="p-2 bg-slate-700 text-slate-200 rounded-md">
-										Join
-									</button>
-								</a>
+								<button 
+									on:click={() => join(game.address)}
+									class="p-2 bg-slate-700 text-slate-200 rounded-md"
+								>
+									Join
+								</button>
 							</th>
 						</tr>
 					{/await}
